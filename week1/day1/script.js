@@ -202,4 +202,23 @@ async function getInstructions2() {
   }
 }
 
-getInstructions2();
+// getInstructions2();
+const img = document.createElement('img');
+img.width = 500;
+function getFetch() {
+  fetch('https://dog.ceo/api/breeds/image/random')
+    .then((res) => res.json())
+    .then((dog) => {
+      console.log(dog.message);
+      img.src = dog.message;
+      document.body.append(img);
+    });
+}
+
+const btn = document.querySelector('button');
+console.log(btn);
+btn.onclick = () => {
+  getFetch();
+};
+
+//getFetch();
