@@ -1,0 +1,32 @@
+<p>This is the each page</p>
+<p>name: {{name}}</p>
+<p>lastName: {{lastName}}</p>
+<p>address: {{address}}</p>
+
+<hr />
+
+<ul>
+  {{#each cities}}
+    {{#if @first}}
+      <li><b>{{this}}</b></li>
+    {{else if @last}}
+      <li><i>{{this}}</i></li>
+    {{else}}
+      <li>{{@index}}: {{this}}</li>
+    {{/if}}
+  {{/each}}
+</ul>
+
+<hr />
+
+{{#each test}}
+  <h1>{{@index}}: {{@key}} - {{this}}</h1>
+{{/each}}
+
+<hr />
+
+{{#with obj1}}
+  <p>I live on street {{street}}, my block number is: {{number}}</p>
+{{/with}}
+
+<p>I live on street {{obj1.street}}, my block number is: {{obj1.number}}</p>
