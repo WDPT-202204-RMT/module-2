@@ -7,12 +7,6 @@ const citySchema = new mongoose.Schema({
   },
   population: {
     type: Number,
-    validate: {
-      validator: (value) => {
-        return value < 1000;
-      },
-      message: "Population should be less than 1000",
-    },
   },
 });
 

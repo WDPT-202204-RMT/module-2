@@ -14,13 +14,32 @@ app.get("/", (req, res) => {
 });
 
 app.get("/city-list", async (req, res) => {
-  const cities = await City.find();
+  const cities = await City.find({}, { _id: 0 }, { sort: { name: 1 } });
   res.render("cities", { cities });
 });
 
+app.get("/city", async (req, res) => {
+  const city = await City.findByIdAndUpdate("6298fcaf579506883c829d25", {
+    $set: { name: "Barcelona" },
+  });
+  res.send(city);
+});
+
+app.get("/bye", async (req, res) => {
+  await City.findByIdAndRemove("6298fcaf579506883c829d25");
+  res.send("ok");
+});
+
+app.get("/count", async (req, res) => {
+  const count = await City.countDocuments();
+  res.send(count.toString());
+});
+
 app.get("/new-city", async (req, res) => {
-  const city = new City({ name: "Berlin", population: 2000 });
-  await city.save();
+  const city = await City.create([
+    { name: "Copenhagen", population: 100000 },
+    { name: "Stockholm", population: 70000 },
+  ]);
   res.send(city);
 });
 
