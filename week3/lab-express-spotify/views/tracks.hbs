@@ -1,0 +1,16 @@
+<div class='container'>
+  <h1>Tracks result</h1>
+  <div class='row'>
+    {{#each hello}}
+      <div class='col-md-4 mb-3'>
+        <div class='card'>
+          <div class='card-body'>
+            <h5 class='card-title text-dark'>{{this.name}}</h5>
+            <audio controls src='{{this.preview_url}}'>
+            </audio>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
