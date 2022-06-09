@@ -1,0 +1,12 @@
+<h1>Books View</h1>
+
+<a href='/books/create'>Create a new Book !</a>
+
+{{#each books}}
+  <div>
+    <h3>Title: {{this.title}}</h3>
+    <p>Author: {{this.author}}</p>
+  </div>
+  <a href='/book/{{this._id}}'>See details</a>
+  <hr />
+{{/each}}
