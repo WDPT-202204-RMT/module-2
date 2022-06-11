@@ -1,0 +1,9 @@
+<h2>User's posts</h2>
+
+<h2>{{user.username}}</h2>
+
+<ul>
+{{#each user.posts}}
+  <li>{{this.title}} - <a href="/posts/{{this._id}}">Read More</a></li>
+{{/each}}
+</ul>
