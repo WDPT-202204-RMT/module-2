@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const { Router, application } = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.model');
@@ -61,18 +61,60 @@ router.post('/signup', async (req, res, next) => {
     //console.log(error);
     //next(error);
   }
-  /*   bcrypt
-    .genSalt(saltRounds)
-    .then((salt) => bcrypt.hash(password, salt))
-    .then((hash) => User.create({ username, email, password: hash }))
-    .then((user) => {
-      console.log(user);
-    })
-    .catch((err) => next(err)); */
+});
+
+// We are going to implement the login route
+
+router.get('/login', (req, res) => {
+  res.render('auth/signin');
 });
 
 router.get('/profile', (req, res) => {
-  res.render('users/user-profile');
+  res.render('users/user-profile', { user: req.session.currentUser });
+});
+
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // If the from is empty
+  if (!email || !password) {
+    res.render('auth/signin', {
+      errorMessage: 'Please fill all the fields',
+    });
+    return;
+  }
+
+  // I need to check is I have a user inside my db that has this email.
+  // {email: "enes@ironhack.com"}
+  User.findOne({ email: email }).then((userFromDb) => {
+    // If the person does not exists. Send an error.
+    if (!userFromDb) {
+      res.render('auth/signin', {
+        errorMessage:
+          'There is no user with this email adress. Please create an account or verify you credentials',
+      });
+      return;
+    }
+
+    // We need to verify if the password that we recive from the FROM matches the password of the userFromDb
+
+    // This function tells us if the password that we recieve from the FORM matches the password that we stored in the DB
+    if (!bcrypt.compareSync(password, userFromDb.password)) {
+      res.render('auth/signin', {
+        errorMessage: 'Invalid Credentials',
+      });
+      return;
+    }
+
+    req.session.currentUser = userFromDb;
+    res.redirect('/profile');
+  });
+});
+
+router.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    res.redirect('/login');
+  });
 });
 
 module.exports = router;

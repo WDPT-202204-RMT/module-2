@@ -19,6 +19,7 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    // This is the Hashed Password
     password: {
       type: String,
       required: [true, 'Password is required'],
