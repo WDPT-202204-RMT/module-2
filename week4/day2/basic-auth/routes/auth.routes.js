@@ -2,12 +2,13 @@ const { Router, application } = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.model');
+const { isLoggedIn, isLoggedOut } = require('../middleware/route-guard');
 
 const saltRounds = 10;
 const router = Router();
 
 // Route that renders the from
-router.get('/signup', (req, res) => {
+router.get('/signup', isLoggedOut, (req, res) => {
   res.render('auth/signup');
 });
 
@@ -65,11 +66,13 @@ router.post('/signup', async (req, res, next) => {
 
 // We are going to implement the login route
 
-router.get('/login', (req, res) => {
-  res.render('auth/signin');
+router.get('/login', isLoggedOut, (req, res) => {
+  res.render('auth/signin', { error: req.session.error });
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', isLoggedIn, (req, res) => {
+  //console.log(req.session);
+  console.log('Verification passed, you can acces this page');
   res.render('users/user-profile', { user: req.session.currentUser });
 });
 
