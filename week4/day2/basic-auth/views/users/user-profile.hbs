@@ -3,6 +3,9 @@
 {{#if user}}
   <h2>Welcome, {{user.username}}!</h2>
   <p>This is your profile page my friend!</p>
+  <div>
+    <img src='{{user.profile_pic}}' />
+  </div>
   <button>
     <a href='/profile'>Reload the page</a>
   </button>

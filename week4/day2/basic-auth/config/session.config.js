@@ -32,7 +32,7 @@ module.exports = (app) => {
         maxAge: 60000 * 60, // 60 * 1000 ms === 1 min
       },
       store: MongoStore.create({
-        mongoUrl: 'mongodb://localhost/basic-auth',
+        mongoUrl: process.env.MONGODB_URI,
       }),
     })
   );

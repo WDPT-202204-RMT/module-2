@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.model');
 const { isLoggedIn, isLoggedOut } = require('../middleware/route-guard');
+const multer = require('../config/cloudinary.config');
 
 const saltRounds = 10;
 const router = Router();
@@ -13,56 +14,66 @@ router.get('/signup', isLoggedOut, (req, res) => {
 });
 
 // Route that process the form request
-router.post('/signup', async (req, res, next) => {
-  const { username, email, password } = req.body;
+router.post(
+  '/signup',
+  multer.single('profile-picture'), // Ask multer to watch the form and get the file from the input that has the name 'profile-picture'
+  async (req, res, next) => {
+    // The file will be send to req.file and not req.body
+    const { username, email, password } = req.body;
 
-  // Check if the fields are empty. If so, sends an error message.
-  if (!username || !email || !password) {
-    res.render('auth/signup', {
-      errorMessage:
-        'All fields are mandatory. Please provide your username, email and password.',
-    });
-    return;
-  }
-
-  // Does the password contains digits, lowercase lettres, uppurcase lettres and is at least 6 char long
-  const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-
-  if (!regex.test(password)) {
-    res.status(501).render('auth/signup', {
-      errorMessage:
-        'The password must contain uppercase and lowercase letter, digits and be at least 6 characters long',
-    });
-    return;
-  }
-
-  try {
-    // pLain => Is the Unhashed password // Tanvie123
-    // Hashed => Is the "safe" password // e2p9dplojspogz477 == Tanvie123
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hash = await bcrypt.hash(password, salt);
-    const user = await User.create({ email, username, password: hash });
-    res.status(201).redirect('/profile');
-  } catch (error) {
-    //console.log(error);
-    //Checks if the Mongoose validation passes. If not, send the mongoose error to the view
-    if (error instanceof mongoose.Error.ValidationError) {
-      // Is my error comming from mongoose.
+    // Check if the fields are empty. If so, sends an error message.
+    if (!username || !email || !password) {
       res.render('auth/signup', {
-        errorMessage: error.message,
+        errorMessage:
+          'All fields are mandatory. Please provide your username, email and password.',
       });
-    }
-    // If this error comes from mongo and the code is 11000 => Wich means unique validation failed
-    else if (error.code === 11000) {
-      res.render('auth/signup', {
-        errorMessage: ' Username and email already exist',
-      });
+      return;
     }
 
-    //console.log(error);
-    //next(error);
+    // Does the password contains digits, lowercase lettres, uppurcase lettres and is at least 6 char long
+    const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+
+    if (!regex.test(password)) {
+      res.status(501).render('auth/signup', {
+        errorMessage:
+          'The password must contain uppercase and lowercase letter, digits and be at least 6 characters long',
+      });
+      return;
+    }
+
+    try {
+      // pLain => Is the Unhashed password // Tanvie123
+      // Hashed => Is the "safe" password // e2p9dplojspogz477 == Tanvie123
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hash = await bcrypt.hash(password, salt);
+      const user = await User.create({
+        email,
+        username,
+        password: hash,
+        profile_pic: req.file.path, // Add the link from Cloundinary to MongoDB
+      });
+      res.status(201).redirect('/profile');
+    } catch (error) {
+      //console.log(error);
+      //Checks if the Mongoose validation passes. If not, send the mongoose error to the view
+      if (error instanceof mongoose.Error.ValidationError) {
+        // Is my error comming from mongoose.
+        res.render('auth/signup', {
+          errorMessage: error.message,
+        });
+      }
+      // If this error comes from mongo and the code is 11000 => Wich means unique validation failed
+      else if (error.code === 11000) {
+        res.render('auth/signup', {
+          errorMessage: ' Username and email already exist',
+        });
+      }
+
+      //console.log(error);
+      //next(error);
+    }
   }
-});
+);
 
 // We are going to implement the login route
 
