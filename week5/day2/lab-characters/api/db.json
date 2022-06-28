@@ -1,0 +1,32 @@
+{
+  "characters": [
+    {
+      "id": 1,
+      "name": "Han Solo",
+      "occupation": "Smuggler",
+      "weapon": "Blaster Pistol",
+      "cartoon": true
+    },
+    {
+      "id": 2,
+      "name": "Luke Skywalker",
+      "occupation": "Jedi Knight",
+      "weapon": "Lightsaber",
+      "cartoon": false
+    },
+    {
+      "name": "test",
+      "occupation": "tester",
+      "weapon": "keyboard",
+      "cartoon": "on",
+      "id": 3
+    },
+    {
+      "name": "ex tester",
+      "occupation": "",
+      "weapon": "",
+      "cartoon": "on",
+      "id": 4
+    }
+  ]
+}
