@@ -17,6 +17,8 @@ const favicon = require('serve-favicon');
 // https://www.npmjs.com/package/path
 const path = require('path');
 
+// const multer = require('multer');
+
 // Middleware configuration
 module.exports = (app) => {
   // In development environment the app logs
@@ -25,6 +27,7 @@ module.exports = (app) => {
   // To have access to `body` property in the request
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  // app.use(multer);
   //app.use(cookieParser());
 
   // Normalizes the path to the views folder
